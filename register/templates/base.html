@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Default title{% endblock title %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav {
+            background-color: #444;
+            padding: 10px 0;
+        }
+        nav a {
+            color: #fff;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        form input, form button {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{% block header %}{% endblock header %}</h1>
+    </header>
+    <nav>
+        {% block button%}
+        <a href="#">Главная</a>
+        <a href="#">Товары</a>
+        <a href="#">Поставки</a>
+        <a href="#">Отчеты</a>
+        {% endblock button %}
+    </nav>
+    {% block main %}
+    <main>
+        <h2>Товары на складе</h2>
+        <form>
+            <input type="text" placeholder="Название товара">
+            <input type="number" placeholder="Количество">
+            <button type="submit">Добавить товар</button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название товара</th>
+                    <th>Количество</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% block items %}
+                <tr>
+                    <td>1</td>
+                    <td>Товар 1</td>
+                    <td>100</td>
+                    <td><button>Редактировать</button> <button>Удалить</button></td>
+                </tr>
+                {% endblock items %}
+            </tbody>
+        </table>
+    </main>
+    {% endblock main %}
+</body>
+</html>
