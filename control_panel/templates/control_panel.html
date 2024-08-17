@@ -2,10 +2,36 @@
 {% block title %} Управление складом {% endblock title %}
 {% block header %} Управление складом  {% endblock header %}
 {% block button %}
-<a href="#">Товары</a>
 <a href="#">Поставки</a>
-<a href="#">Отчеты</a>
+<a href="/control_panel/reports">Отчеты</a>
 <a href="http://127.0.0.1:8000/">Домашняя страница</a>
 {% endblock button %}
-
-
+{% block main %}
+<h2>Товары на складе</h2>
+<form method='post'>
+    {% csrf_token %}
+    <input type="text" name="itemName" placeholder="Название товара">
+    <input type="number" name="itemQuantity" placeholder="Количество">
+    <button type="submit">Добавить товар</button>
+</form>
+<table id="itemTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название товара</th>
+            <th>Количество</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in info_items.items %}
+        <tr>
+            <td>{{key}}</td>
+            <td>{{value.0}}</td>
+            <td>{{value.1}}</td>
+            <td><button>Редактировать</button> <button>Удалить</button></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock main %}

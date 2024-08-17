@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %} Отчёты {% endblock title %}
+{% block header %} Отчёты  {% endblock header %}
+{% block button %}
+<a href="/control_panel/">Товары</a>
+<a href="#">Поставки</a>
+<a href="http://127.0.0.1:8000/">Домашняя страница</a>
+{% endblock button %}
+{% block main %}
+<main>
+    <h2>Отчеты по складу</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Название отчета</th>
+                <th>Дата</th>
+                <th>Ф.И.О состовляющего отчёт</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for name_file in names_file %}
+            <tr>
+                <td><a href="/control_panel/download_report/{{name_file}}">{{name_file}}</a></td>
+                <td>2023-01-31</td>
+                <td>Степан Степан Стапнович</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="upload-container">
+            <button class="upload-button">Загрузить файл</button>
+            <input type="file" class="file-input" name="file_report">
+        </div>    
+    </form>
+</main>
+{% endblock main %}
