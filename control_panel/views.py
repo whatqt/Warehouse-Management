@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpRequest, HttpResponse, FileResponse
+from django.http import HttpRequest, HttpResponse, FileResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
@@ -30,11 +30,28 @@ def control_panel(requset: HttpRequest):
         print(info_items)
         return render(requset, 'control_panel.html', {'info_items': info_items})
     
+def delete_item(request: HttpRequest):
+    print('первый этап1')
+    if request.method == 'POST':
+        print('второй этап2')
+        # print(request.body)
+        data = json.loads(request.body)
+        print(data)
+        print(data['id_item'])
+        # ItemsInfo.objects.filter(id=data['id_item']).delete()
+        # items = ItemsInfo.objects.all()
+        # info_items = {}
+        # for item in items:
+        #     info_items[item.id] = [item.name_item, item.quantity_item]
+        # #если удаляется один объект, то вызывается ошибка VM372:1 Uncaught (in promise) SyntaxError: Unexpected token 'e', "test" is not valid JSON
+        # return render(request, 'control_panel.html', {'info_items': info_items})
+
 def handle_uploaded_file(f):
     with open(f"reports_file//{f.name}", "wb+") as destination:
         for chunk in f.chunks():
             destination.write(chunk)
 
+@login_required
 def reports(request: HttpRequest):
     if request.method == 'POST':
         file = request.FILES['file_report']
@@ -63,5 +80,7 @@ def reports(request: HttpRequest):
         data_reports[objects.name_report_file] = [objects.date_upload_report, objects.name_user]
     return render(request, 'reports.html', {'data_reports': data_reports})
 
+@login_required
 def download_report(request: HttpRequest, file_name):
     return FileResponse(open(f'reports_file/{file_name}', 'rb'), as_attachment=True)
+

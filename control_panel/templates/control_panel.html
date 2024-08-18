@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %} Управление складом {% endblock title %}
 {% block header %} Управление складом  {% endblock header %}
 {% block button %}
@@ -26,12 +27,15 @@
     <tbody>
         {% for key, value in info_items.items %}
         <tr>
-            <td>{{key}}</td>
+            <td id={{key}} data-type="number">{{key}}</td>
             <td>{{value.0}}</td>
             <td>{{value.1}}</td>
-            <td><button>Редактировать</button> <button>Удалить</button></td>
+            <td>
+            <button type="button" id="submitButton" onclick="sendData('{{key}}')">Удалить</button>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
+    <script src="{% static "js/test.js" %}"></script>
 </table>
 {% endblock main %}

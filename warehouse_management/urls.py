@@ -7,5 +7,6 @@ from register.views import index
 urlpatterns = [
     path('', index),
     path('register/', include('register.urls')),
-    path('control_panel/', include('control_panel.urls'))
+    path('control_panel/', include('control_panel.urls')),
+    path('admin_panel/', include('admin_panel.urls'))
 ]
