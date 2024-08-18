@@ -18,11 +18,11 @@
             </tr>
         </thead>
         <tbody>
-            {% for name_file in names_file %}
+            {% for k, v in data_reports.items %}
             <tr>
-                <td><a href="/control_panel/download_report/{{name_file}}">{{name_file}}</a></td>
-                <td>2023-01-31</td>
-                <td>Степан Степан Стапнович</td>
+                <td><a href="/control_panel/download_report/{{k}}">{{k}}</a></td>
+                <td>{{v.0}}</td>
+                <td>{{v.1}}</td>
             </tr>
             {% endfor %}
         </tbody>

@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .models import ItemsInfo, ReportInfo
 from os import listdir
 from datetime import date
+import json
 
 
 
@@ -29,31 +30,38 @@ def control_panel(requset: HttpRequest):
         print(info_items)
         return render(requset, 'control_panel.html', {'info_items': info_items})
     
-@login_required   
 def handle_uploaded_file(f):
-    with open(f"reports_file/{f.name}", "wb+") as destination:
+    with open(f"reports_file//{f.name}", "wb+") as destination:
         for chunk in f.chunks():
             destination.write(chunk)
-@login_required
+
 def reports(request: HttpRequest):
     if request.method == 'POST':
         file = request.FILES['file_report']
+        print(file.name)
         handle_uploaded_file(file)
         date_upload_file = date.today()
+        with open('usernick-username.json', 'r', encoding='utf-8') as js:
+            json_file_username = json.load(js)
+            name = json_file_username[request.user.username]
+        # в панели админа добавить возможность добавлять ник пользователя и его реально имя для того, чтобы в БД заносилось Ф.И.О пользователя 
+        print(name)
         ReportInfo.objects.create(
             name_report_file=file, 
-            name_user=request.user.username,
+            name_user=name,
             date_upload_report=date_upload_file
             )
+        data_reports = {}
+        report_info = ReportInfo.objects.all()
+        for objects in report_info:
+            data_reports[objects.name_report_file] = [objects.date_upload_report, objects.name_user]
+        return render(request, 'reports.html', {'data_reports': data_reports})
         
-        names_file = listdir('reports_file/')
-        print(names_file)
-        return render(request, 'reports.html', {'names_file': names_file})
-        
-    names_file = listdir('reports_file/')
-    print(names_file)
-    return render(request, 'reports.html', {'names_file': names_file})
+    data_reports = {}
+    report_info = ReportInfo.objects.all()
+    for objects in report_info:
+        data_reports[objects.name_report_file] = [objects.date_upload_report, objects.name_user]
+    return render(request, 'reports.html', {'data_reports': data_reports})
 
-@login_required
 def download_report(request: HttpRequest, file_name):
     return FileResponse(open(f'reports_file/{file_name}', 'rb'), as_attachment=True)
