@@ -38,14 +38,16 @@ def delete_item(request: HttpRequest):
         data = json.loads(request.body)
         print(data)
         print(data['id_item'])
-        # ItemsInfo.objects.filter(id=data['id_item']).delete()
+        ItemsInfo.objects.filter(id=data['id_item']).delete()
         # items = ItemsInfo.objects.all()
         # info_items = {}
         # for item in items:
         #     info_items[item.id] = [item.name_item, item.quantity_item]
         # #если удаляется один объект, то вызывается ошибка VM372:1 Uncaught (in promise) SyntaxError: Unexpected token 'e', "test" is not valid JSON
         # return render(request, 'control_panel.html', {'info_items': info_items})
-
+        # return JsonResponse({'tru': 'tru'})
+        return redirect('http://127.0.0.1:8000/control_panel/')
+    
 def handle_uploaded_file(f):
     with open(f"reports_file//{f.name}", "wb+") as destination:
         for chunk in f.chunks():
