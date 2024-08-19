@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block title %} Добавление пользователей {% endblock title %}
+{% block header %} Добавление пользователей {% endblock header %}
+{% block button %}
+<a href="http://127.0.0.1:8000/">Домашняя страница</a>
+{% endblock button %}
+{% block main %}
+<style>
+    /* Стили для модального окна */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Стили для полей ввода */
+    .modal-content input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        box-sizing: border-box;
+    }
+
+    .modal-content button {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        box-sizing: border-box;
+    }
+</style>
+</style>
+</style>
+<h2>Добавление, удаление, изменение файла usernick-username.json</h2>
+<h3>При помощи этой панели вы можете привязать username пользователя к его реальной Ф.И.О</h3>
+<form method='post'>
+    {% csrf_token %}
+    <input type="text" name="usernick" placeholder="Usernick пользователя">
+    <input type="text" name="FLPname" placeholder="Ф.И.О пользователя">
+    <button type="submit">Добавить пользователя</button>
+</form>
+<table id="itemTable">
+    <thead>
+        <tr>
+            <th>Usernick пользователя</th>
+            <th>Ф.И.О пользователя</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in data.items %}
+        <tr>
+            <td>{{key}}</td>
+            <td>{{value}}</td>
+            <td>
+                <button type="button" class="editButton" data-usernick="{{key}}" data-userlastname="{{value}}">Изменить</button>
+                <button type="button" class="deleteButton" data-usernick="{{key}}">Удалить</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form method='post' id="editForm">
+            {% csrf_token %}
+            <input type="text" name="oldusernick" id="oldusernick" readonly>
+            <input type="text" name="olduserlastname" id="olduserlastname" readonly>
+            <input type="text" name="newuserlastname" id="newuserlastname" placeholder="Новое Ф.И.О">
+            <button type="submit">Сохранить</button>
+        </form>
+    </div>
+</div>
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Вы уверены, что хотите удалить этого пользователя?</p>
+        <form method='post' id="deleteForm">
+            {% csrf_token %}
+            <input type="hidden" name="usernick" id="deleteUsernick">
+            <button type="submit">Удалить</button>
+            <button type="button" class="cancel">Отмена</button>
+        </form>
+    </div>
+</div>
+<script>
+    // Получите модальные окна
+    var modal = document.getElementById("modal");
+    var deleteModal = document.getElementById("deleteModal");
+
+    // Получите кнопки закрытия
+    var span = document.getElementsByClassName("close");
+    var cancelButton = document.querySelector("#deleteModal .cancel");
+
+    // Когда пользователь нажимает на кнопку "Изменить", открывается модальное окно
+    var editButtons = document.getElementsByClassName("editButton");
+    for (var i = 0; i < editButtons.length; i++) {
+        editButtons[i].onclick = function() {
+            var usernick = this.getAttribute('data-usernick');
+            var userlastname = this.getAttribute('data-userlastname');
+            document.getElementById('oldusernick').value = usernick;
+            document.getElementById('olduserlastname').value = userlastname;
+            modal.style.display = "block";
+        }
+    }
+
+    // Когда пользователь нажимает на кнопку "Удалить", открывается модальное окно для подтверждения
+    var deleteButtons = document.getElementsByClassName("deleteButton");
+    for (var i = 0; i < deleteButtons.length; i++) {
+        deleteButtons[i].onclick = function() {
+            var usernick = this.getAttribute('data-usernick');
+            document.getElementById('deleteUsernick').value = usernick;
+            deleteModal.style.display = "block";
+        }
+    }
+
+    // Когда пользователь нажимает на <span> (x), закрывается модальное окно
+    for (var i = 0; i < span.length; i++) {
+        span[i].onclick = function() {
+            modal.style.display = "none";
+            deleteModal.style.display = "none";
+        }
+    }
+
+    // Когда пользователь нажимает на кнопку "Отмена", закрывается модальное окно для подтверждения удаления
+    cancelButton.onclick = function() {
+        deleteModal.style.display = "none";
+    }
+
+    // Когда пользователь нажимает в любом месте вне модального окна, оно закрывается
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+        if (event.target == deleteModal) {
+            deleteModal.style.display = "none";
+        }
+    }
+
+    // Валидация формы перед отправкой
+    document.getElementById('editForm').addEventListener('submit', function(event) {
+        var newusernick = document.getElementById('newusernick').value;
+        var newuserlastname = document.getElementById('newuserlastname').value;
+
+        if (!newusernick || !newuserlastname) {
+            event.preventDefault();
+            alert('Пожалуйста, заполните все поля.');
+        }
+    });
+</script>
+
+
+{% endblock main %}

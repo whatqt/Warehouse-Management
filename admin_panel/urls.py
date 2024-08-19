@@ -3,5 +3,6 @@ from .views import *
 
 
 urlpatterns = [
-    path('', index)
+    path('', index),
+    path('add_user/', add_and_ref_user)
 ]
