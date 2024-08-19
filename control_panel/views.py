@@ -31,21 +31,12 @@ def control_panel(requset: HttpRequest):
         return render(requset, 'control_panel.html', {'info_items': info_items})
     
 def delete_item(request: HttpRequest):
-    print('первый этап1')
     if request.method == 'POST':
         print('второй этап2')
-        # print(request.body)
         data = json.loads(request.body)
         print(data)
         print(data['id_item'])
         ItemsInfo.objects.filter(id=data['id_item']).delete()
-        # items = ItemsInfo.objects.all()
-        # info_items = {}
-        # for item in items:
-        #     info_items[item.id] = [item.name_item, item.quantity_item]
-        # #если удаляется один объект, то вызывается ошибка VM372:1 Uncaught (in promise) SyntaxError: Unexpected token 'e', "test" is not valid JSON
-        # return render(request, 'control_panel.html', {'info_items': info_items})
-        # return JsonResponse({'tru': 'tru'})
         return redirect('http://127.0.0.1:8000/control_panel/')
     
 def handle_uploaded_file(f):
@@ -60,10 +51,11 @@ def reports(request: HttpRequest):
         print(file.name)
         handle_uploaded_file(file)
         date_upload_file = date.today()
-        with open('usernick-username.json', 'r', encoding='utf-8') as js:
-            json_file_username = json.load(js)
+        with open('usernick-username.json', 'r', encoding='utf-8') as file:
+            json_file_username = json.load(file)
             name = json_file_username[request.user.username]
         # в панели админа добавить возможность добавлять ник пользователя и его реально имя для того, чтобы в БД заносилось Ф.И.О пользователя 
+        #доделать эту функцию и исправить баги, и тестить
         print(name)
         ReportInfo.objects.create(
             name_report_file=file, 
