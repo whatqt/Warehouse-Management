@@ -107,6 +107,9 @@
         <a href="#">Поставки</a>
         <a href="#">Отчеты</a>
         {% endblock button %}
+        {% if request.user.is_staff %}
+            <a href="http://127.0.0.1:8000/admin_panel/">Админ панель</a>
+    {% endif %}
     </nav>
     {% block main %}
     <main>

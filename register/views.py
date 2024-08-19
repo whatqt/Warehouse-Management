@@ -35,6 +35,10 @@ def log_in(request: HttpRequest):
         auth = authenticate(request, username=username, password=password)
         print(auth)
         if auth:
+            check_is_staff = User.objects.get(username=username).is_staff
+            if check_is_staff:
+                login(request, auth)
+                return redirect('http://127.0.0.1:8000/admin_panel/')
             login(request, auth)
             return redirect('http://127.0.0.1:8000/')
         else:

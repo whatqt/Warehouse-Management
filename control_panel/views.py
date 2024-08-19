@@ -20,8 +20,9 @@ def control_panel(requset: HttpRequest):
         info_items = {}
         for item in items:
             info_items[item.id] = [item.name_item, item.quantity_item]
-        print(info_items) 
-        return render(requset, 'control_panel.html', {'info_items': info_items}) 
+        print(info_items)
+        return redirect('http://127.0.0.1:8000/control_panel/')
+        # return render(requset, 'control_panel.html', {'info_items': info_items}) 
     else:
         items = ItemsInfo.objects.all()
         info_items = {}
