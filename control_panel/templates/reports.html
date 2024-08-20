@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %} Отчёты {% endblock title %}
 {% block header %} Отчёты  {% endblock header %}
 {% block button %}
@@ -15,14 +16,18 @@
                 <th>Название отчета</th>
                 <th>Дата</th>
                 <th>Ф.И.О состовляющего отчёт</th>
+                <th>Действие</th>
             </tr>
         </thead>
         <tbody>
             {% for k, v in data_reports.items %}
             <tr>
-                <td><a href="/control_panel/download_report/{{k}}">{{k}}</a></td>
+                <td id="{{k}}"><a href="/control_panel/download_report/{{k}}">{{k}}</a></td>
                 <td>{{v.0}}</td>
                 <td>{{v.1}}</td>
+                <td>
+                <button type="button" id="submitButton" onclick="sendData('{{k}}'); redirect();">Удалить</button>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -31,8 +36,14 @@
         {% csrf_token %}
         <div class="upload-container">
             <button class="upload-button">Загрузить файл</button>
-            <input type="file" class="file-input" name="file_report">
+            <input type="file" class="file-input" name="file_report" required>
         </div>    
     </form>
 </main>
+<script src="{% static "js/reports.js" %}"></script>
+<script>
+    function redirect() {
+        window.location.href = "http://127.0.0.1:8000/control_panel/reports";
+    }
+</script>
 {% endblock main %}

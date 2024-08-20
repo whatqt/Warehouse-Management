@@ -31,14 +31,14 @@
             <td>{{value.0}}</td>
             <td>{{value.1}}</td>
             <td>
-            <button type="button" id="submitButton" onclick="sendData('{{key}}'); myFunc();">Удалить</button>
+                <button type="button" id="submitButton" onclick="sendData('{{key}}'); redirect();">Удалить</button>
             </td>
         </tr>
         {% endfor %}
     </tbody>
-    <script src="{% static "js/test.js" %}"></script>
+    <script src="{% static "js/items.js" %}"></script>
     <script>
-        function myFunc() {
+        function redirect() {
             window.location.href = "http://127.0.0.1:8000/control_panel/";
         }
     </script>
