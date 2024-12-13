@@ -40,11 +40,13 @@ def handle_uploaded_file(f):
 def reports(request: HttpRequest):
     if request.method == 'POST':
         file_upload = request.FILES['file_report']
-        handle_uploaded_file(file_upload)
         date_upload_file = date.today()
-        with open('usernick-username.json', 'r', encoding='utf-8') as file_json:
+        with open('usernick-username.json', 'r', encoding='utf-8') as file_json: # в json файле должны быть имена сотрудников
             json_file_username = json.load(file_json)
-            name_user_json = json_file_username[request.user.username]
+            try:
+                name_user_json = json_file_username[request.user.username]
+            except KeyError:
+                return HttpResponse("<h1>Сотрудник не добавлен в файл. Доступ запрещен</h1>")
         ReportInfo.objects.create(
             name_report_file=file_upload.name, 
             name_user=name_user_json,
